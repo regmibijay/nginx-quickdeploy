@@ -35,7 +35,7 @@ would yield a config file that looks like this:
 ```
 server {
   root /var/www/html;
-  server_name www.regdelivery.de;
+  server_name www.example.org;
   listen 80;
    location / {
        try_files $uri $uri/;
