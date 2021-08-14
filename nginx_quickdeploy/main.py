@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 import sys
-from file_operations import read_config, gen_config
-from misc import greet
+from .file_operations import read_config, gen_config
+from .misc import greet
 
 
 def main(argv=sys.argv[1:]):

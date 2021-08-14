@@ -1,6 +1,6 @@
 # handles all the file operations
 import os
-import validation
+from .validation import is_valid_hostname
 
 
 def read_config(path):
@@ -28,7 +28,7 @@ def gen_config():
     if URL == "":
         print("URL can not be empty")
         gen_config()
-    if not validation.is_valid_hostname(URL):
+    if not is_valid_hostname(URL):
         print(f"{URL} does not seem to be a valid hostname.")
         gen_config()
 
@@ -57,9 +57,7 @@ def gen_config():
         ROOT = "/var/www/html"
 
     # proxy pass
-    PROXY = input(
-        "Should this server need to proxy_pass, enter the address here:  "
-    )
+    PROXY = input("Should this server need to proxy_pass, enter the address here:  ")
     if PROXY == "":
         PROXY = False
 
@@ -90,9 +88,7 @@ def write_config(path, data: list):
             f.writelines(data)
         return True
     except OSError:
-        print(
-            f"Specified config file {path} could not be written, please make"
-        )
+        print(f"Specified config file {path} could not be written, please make")
         print("sure you have rights to read the file.")
         print(*data, sep="\r\n")
         exit()

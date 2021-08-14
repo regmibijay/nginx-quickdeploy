@@ -4,9 +4,7 @@ import json
 import os
 
 
-with open(
-    os.path.join(os.path.dirname(__file__), "version.json"), "r"
-) as f:
+with open(os.path.join(os.path.dirname(__file__), "version.json"), "r") as f:
     VERSION = json.loads(f.read())
 
 
