@@ -1,8 +1,9 @@
 from argparse import ArgumentParser
 import sys
 from .file_operations import read_config, gen_config
-from .misc import greet
-from system_operations import restart_nginx
+from .misc import greet, adios
+from .system_operations import certbot_handler, restart_handler
+
 
 def main(argv=sys.argv[1:]):
     print(greet())
@@ -19,32 +20,26 @@ def main(argv=sys.argv[1:]):
         read_config(arg.i)
     else:
         try:
-            res = gen_config()
+            url, res = gen_config()
             if res:
                 print()
                 print("Your new website was deployed successfully")
-                print("Restarting Nginx with 'sudo service nginx restart'")
-                print("You can change the restart command below")
-                rc = input("Do you want to restart? [Y/N/Command]")
-                if rc.upper() == "N":
-                    print("Nginx will not be started. Bye.")
-                if rc.upper() == "Y":
-                    print("Attempting to restart Nginx")
-                    if restart_nginx():
-                        print("Nginx restarted successfully")
-                    else:
-                        print("Problem with restarting nginx")
+                print()
+                cert_status = certbot_handler(url)
+                if cert_status == "no_cert":
+                    print("You chose not to install certs.")
+                elif cert_status:
+                    print("Successfully installed SSL Certs")
                 else:
-                    print(f"Attempting to restart Nginx with {rc}")
-                    if restart_nginx(rc):
-                        print("Nginx restarted successfully")
-                    else:
-                        print(
-                            "Problem with restarting nginx, please restart manually"
-                        )
+                    print("Certbot encountered problem while acquiring certs.")
+                    print("Try again later.")
+                print()
+                restart_handler()
+                print(adios())
 
         except KeyboardInterrupt:
-            print("\nBye!")
+            print("\n")
+            print(adios())
             exit()
 
 

@@ -19,3 +19,15 @@ def greet(version=VERSION):
 
 
         """
+
+
+def adios(version=VERSION):
+    return f"""
+    #####################################################
+    ##             Nginx QuickDeploy                   ##
+    ##           script ended successfully             ##
+    ##                v{version["version"]}                           ##
+    ## https://github.com/regmibijay/nginx-quickdeploy ##
+    ##                                                 ##
+    #####################################################
+"""

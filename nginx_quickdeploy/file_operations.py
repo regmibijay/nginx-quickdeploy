@@ -22,17 +22,21 @@ def read_config(path):
 
 def gen_config():
     # handling server name
+    URL = False
     URL = input(
         "FQDN of your domain, e.g. example.com or subdomain.example.com without http or https:  "
     )
     if URL == "":
         print("URL can not be empty")
         gen_config()
-    if not is_valid_hostname(URL):
+    while not is_valid_hostname(URL):
         print(f"{URL} does not seem to be a valid hostname.")
-        gen_config()
+        URL = input(
+            "FQDN of your domain, e.g. example.com or subdomain.example.com without http or https:  "
+        )
 
     # config path
+    print()
     PATH = input(
         f"Where should the new config file be saved?, default is /etc/nginx/sites-available/{URL} :  "
     )
@@ -40,6 +44,7 @@ def gen_config():
         PATH = "/etc/nginx/sites-available/" + URL
 
     # handling ports
+    print()
     print(
         "Ports separated by commas(,) in nginx fashion, like 80, [::]:80 etc"
         + os.linesep,
@@ -48,24 +53,28 @@ def gen_config():
     )
     PORT = input("Enter ports here: ")
     if PORT == "":
-        PORT = "80"
+        PORT = "80; [::]:80"
     PORT = PORT.split(",")
 
     # root folder
+    print()
     ROOT = input(f"Enter the www root path(default /var/www/html/{URL}):  ")
     if ROOT == "":
         ROOT = f"/var/www/html{URL}"
 
     # proxy pass
+    print()
     PROXY = input("Proxy address, leave empty to unset:  ")
     if PROXY == "":
         PROXY = False
 
     CONFIG = config_lines(url=URL, ports=PORT, root=ROOT, proxy=PROXY)
-    return write_config(path=PATH, data=CONFIG)
+    return URL, write_config(path=PATH, data=CONFIG)
 
 
 def config_lines(url, ports, root, proxy=False):
+    ssl_cert_path = False
+    ssl_key_path = False
     head = ["server {"]
     head.append(f"  root {root};")
     head.append("index index.html index.htm index.nginx-debian.html;")
@@ -73,6 +82,27 @@ def config_lines(url, ports, root, proxy=False):
     for port in ports:
         if not port == "":
             head.append(f"  listen {port};")
+        if "ssl" in port:
+            print(f"You have ssl enabled on {port}")
+            ssl_cert_path = input(f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/fullchain.pem):  ")
+            if ssl_cert_path == "":
+                ssl_cert_path = f"/etc/letsencrypt/live/{url}/fullchain.pem"
+            if not os.path.isfile(ssl_cert_path):
+                print(f"{ssl_cert_path} does not seem to exist.")
+                while not os.path.isfile(ssl_cert_path):
+                    ssl_cert_path = input("Enter ssl cert path:  ")
+
+            ssl_key_path = input(f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/privkey.pem):  ")
+            if ssl_key_path == "":
+                ssl_key_path = "/etc/letsencrypt/live/{url}/privkey.pem"
+            if not os.path.isfile(ssl_key_path):
+                print(f"{ssl_key_path} does not seem to exist.")
+                while not os.path.isfile(ssl_key_path):
+                    ssl_key_path = input("Enter ssl cert path:  ")
+
+    if ssl_cert_path and ssl_key_path:
+        head.append(f"  ssl_certificate {ssl_cert_path};")
+        head.append(f"  ssl_certificate_key {ssl_key_path};")
     head.append("   location / {")
     head.append("       try_files $uri $uri/ =404;")
     if proxy:
