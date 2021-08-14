@@ -18,7 +18,7 @@ Variables:
 ## Tips and Examples
 Invoke the script with sudo rights if you want to write to `/etc/ngnix/sites-available` as it is write protected for non sudo users.
 
-`# sudo nginx-quickdeploy`
+`# sudo quickdeploy`
 ```
 FQDN of your domain, e.g. example.com or subdomain.example.com without http or https:  www.example.org
 Where should the new config file be saved?, default is /etc/nginx/sites-available/www.example.org :
