@@ -68,12 +68,13 @@ def gen_config():
 def config_lines(url, ports, root, proxy=False):
     head = ["server {"]
     head.append(f"  root {root};")
+    head.append("index index.html index.htm index.nginx-debian.html;")
     head.append(f"  server_name {url};")
     for port in ports:
         if not port == "":
             head.append(f"  listen {port};")
     head.append("   location / {")
-    head.append("       try_files $uri $uri/;")
+    head.append("       try_files $uri $uri/ =404;")
     if proxy:
         head.append(f"      proxy_pass {proxy};")
     head.append("   }")
