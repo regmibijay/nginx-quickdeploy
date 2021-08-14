@@ -10,7 +10,7 @@ def main(argv=sys.argv[1:]):
     parser.add_argument(
         "-i",
         "--input",
-        help="Input json file for easy installation",
+        help="Input json file for easy installation, currently unsupported",
         nargs="?",
     )
     arg = parser.parse_args()
