@@ -23,7 +23,7 @@ setuptools.setup(
     description='Nginx Quickdeploy',
     install_requires = [],
     entry_points = {'console_scripts': [
-    'nginx-quickdeploy=quickdeploy.main:main',
+    'nginx-quickdeploy=nginx_quickdeploy.main:main',
     ]
     },
     python_requires = '>=3.6',
