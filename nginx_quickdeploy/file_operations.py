@@ -52,12 +52,12 @@ def gen_config():
     PORT = PORT.split(",")
 
     # root folder
-    ROOT = input("Enter the www root path(default /var/www/html):  ")
+    ROOT = input(f"Enter the www root path(default /var/www/html/{URL}):  ")
     if ROOT == "":
-        ROOT = "/var/www/html"
+        ROOT = f"/var/www/html{URL}"
 
     # proxy pass
-    PROXY = input("Should this server need to proxy_pass, enter the address here:  ")
+    PROXY = input("Proxy address, leave empty to unset:  ")
     if PROXY == "":
         PROXY = False
 

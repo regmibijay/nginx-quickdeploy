@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 import sys
 from .file_operations import read_config, gen_config
 from .misc import greet
-
+from system_operations import restart_nginx
 
 def main(argv=sys.argv[1:]):
     print(greet())
@@ -23,7 +23,25 @@ def main(argv=sys.argv[1:]):
             if res:
                 print()
                 print("Your new website was deployed successfully")
-                print("Restart nginx to serve it via nginx.")
+                print("Restarting Nginx with 'sudo service nginx restart'")
+                print("You can change the restart command below")
+                rc = input("Do you want to restart? [Y/N/Command]")
+                if rc.upper() == "N":
+                    print("Nginx will not be started. Bye.")
+                if rc.upper() == "Y":
+                    print("Attempting to restart Nginx")
+                    if restart_nginx():
+                        print("Nginx restarted successfully")
+                    else:
+                        print("Problem with restarting nginx")
+                else:
+                    print(f"Attempting to restart Nginx with {rc}")
+                    if restart_nginx(rc):
+                        print("Nginx restarted successfully")
+                    else:
+                        print(
+                            "Problem with restarting nginx, please restart manually"
+                        )
 
         except KeyboardInterrupt:
             print("\nBye!")
