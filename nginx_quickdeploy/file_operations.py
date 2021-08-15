@@ -1,6 +1,7 @@
 # handles all the file operations
 import os
 import json
+import subprocess
 from .validation import is_valid_hostname
 
 
@@ -76,7 +77,13 @@ def gen_config():
 def config_lines(url, ports, root, proxy=False, ssl_cert_path=False, ssl_key_path=False):
     head = ["server {"]
     head.append(f"  root {root};")
-    head.append("  index index.html index.htm index.nginx-debian.html;")
+    if not check_if_webroot(root) and not proxy:
+        print("No index.html in root folder, creating a placeholder.")
+        create_default_index_file(
+            os.path.join(root, "index_quickdeploy.html")
+        )
+    if not proxy:
+        head.append("  index index.html index.htm index_quickdeploy.html;")
     head.append(f"  server_name {url};")
     for port in ports:
         if not port == "":
@@ -174,3 +181,91 @@ def standard_config():
         "ssl_cert_path": False,
         "ssl_key_path": False,
     }
+
+
+def check_if_webroot(path):
+    if os.path.isfile(
+        os.path.join(path, "index.html")
+    ):
+        return True
+    return False
+
+
+def create_default_index_file(path):
+    default_content = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title></title>
+            <style>
+                html{
+                    width: 100%;
+                    height: 100%;
+                    background-image: linear-gradient(pink,violet);
+                }
+                .container {
+                    width: 50%;
+                    margin: auto;
+                    background-color: beige;
+                    padding: 10px;
+                    text-align: center;
+                    border-radius: 10px;
+                    text-underline-position: below;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                .container h1{
+                    font-size: 24px;
+                }
+                .container span{
+                    font-family:  'Times New Roman', Times, serif;
+                    font-style: italic;
+                }
+                .source-text a {
+                    font-size: large;
+                    font-style: normal;
+                    text-decoration: none;
+                    color: green;
+                }
+                .source-text a:hover {
+                    color: blueviolet;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>
+                    Deployment Complete
+                </h1>
+                <p>
+                    Your website has been successfully set up.
+                    To deploy your html files, simply copy the code to this
+                    folder. This html is just a placeholder. If you encountered
+                    any problems during setup or have a suggestion to make
+                    this product better, feel free to open an issue on GitHub below.
+                </p>
+                <span>
+                    Powered by
+                </span>
+                <span class="source-text">
+                    <a href="https://github.com/regmibijay/nginx-quickdeploy">Nginx QuickDeploy</a>
+                </span>
+            </div>
+        </body>
+        </html>
+    """
+    if not os.path.isdir(os.path.dirname(path)):
+        try:
+            subprocess.check_output(["mkdir", "-p", os.path.dirname(path)])
+        except Exception as e:
+            print(str(e))
+            print("Creating directory failed, so underlying process will fail too.")
+    try:
+        with open(path, "w") as f:
+            f.write(default_content)
+        return True
+    except Exception as e:
+        print(str(e))
+        return False
