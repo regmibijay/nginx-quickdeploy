@@ -1,7 +1,6 @@
 # handles all the file operations
 import os
 import json
-from typing import DefaultDict
 from .validation import is_valid_hostname
 
 
@@ -62,7 +61,7 @@ def gen_config():
     print()
     ROOT = input(f"Enter the www root path(default /var/www/html/{URL}):  ")
     if ROOT == "":
-        ROOT = f"/var/www/html{URL}"
+        ROOT = f"/var/www/html/{URL}"
 
     # proxy pass
     print()
@@ -142,7 +141,7 @@ def handle_config(data: dict):
             stan_data[key] = data[key]
         except KeyError:
             print(f"Unknown key {key} found. Please refer to our documentation")
-    
+
     data = stan_data
     mandatory_fields = ["url"]
     if not all([x for x in mandatory_fields if x in data]):

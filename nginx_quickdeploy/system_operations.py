@@ -47,7 +47,7 @@ def certbot_handler(domain):
 
 def get_cert_letsencrypt(domain):
     try:
-        subprocess.check_output(["sudo", "certbot", "--nginx", "--domains", f"{domain}"])
+        subprocess.check_output(["sudo", "certbot", "--nginx", "--force-renewal", "--redirect", "--domains", f"{domain}"])
         return True
     except Exception as e:
         print(str(e))
