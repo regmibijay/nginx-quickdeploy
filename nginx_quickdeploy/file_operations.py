@@ -55,7 +55,7 @@ def gen_config():
     )
     PORT = input("Enter ports here: ")
     if PORT == "":
-        PORT = "80; [::]:80"
+        PORT = "80, [::]:80"
     PORT = PORT.split(",")
 
     # root folder
@@ -117,7 +117,7 @@ def write_config(path, data: list):
     # data = [line  for line in data]
     try:
         with open(path, "w") as f:
-            f.writelines(data)
+            f.writelines([line + os.linesep for line in data])
         return True
     except OSError:
         print()
