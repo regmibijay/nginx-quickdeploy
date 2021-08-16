@@ -1,4 +1,5 @@
 # NGINX QUICKDEPLOY
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## About
 
@@ -9,12 +10,25 @@ Helps you create and deploy websites on nginx quickly.
 
 ## Usage
 ### Variables:
+
 - 'FQDN' : Fully Qualified Domain Name, name of your website
 - Nginx config path: Path where your generated config file is stored.
 - Ports: Ports to listen to, in format: `<port1> [ssl], <port2> [ssl]`
 - Root path: Path where your html files are located
 - Proxy: If your actual application is running on some other port, you can proxy pass and use nginx as webserver. For that just use this function, if not leave it empty
 
+### CLI
+```
+  -h, --help                          Show this help message and exit
+  -i [INPUT], --input [INPUT]         Input json file for easy installation
+  -d [DOMAIN], --domain [DOMAIN]      Domain you want to set up.
+  -p [PATH], --path [PATH]            Config file path
+  --ports [PORTS]                     Ports to listen to separated by comma(,)
+  -w [WEBROOT], --webroot [WEBROOT]   Webroot folder containing index.html
+  -f [FORWARD], --forward [FORWARD]   Proxy pass URL
+  --ssl_cert_path [SSL_CERT_PATH]     SSL certificate path
+  --ssl_key_path [SSL_KEY_PATH]       SSL key path
+```
 ### JSON input:
 Json input is also supported for easier deployment. Following keys are supported:
 - url : mandatory : provide FQDN 

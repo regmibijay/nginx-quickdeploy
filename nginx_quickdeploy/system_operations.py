@@ -15,7 +15,7 @@ def restart_handler():
     print("You can change the restart command below")
     rc = input("Do you want to restart? [Y/N/Command]:  ")
     if rc.upper() == "N":
-        print("Nginx will not be started. Bye.")
+        print("Nginx will not be restarted. Bye!")
     elif rc.upper() == "Y":
         print("Attempting to restart Nginx")
         if restart_nginx():
@@ -27,9 +27,7 @@ def restart_handler():
         if restart_nginx(rc):
             print("Nginx restarted successfully")
         else:
-            print(
-                "Problem with restarting nginx, please restart manually"
-            )
+            print("Problem with restarting nginx, please restart manually")
 
 
 def certbot_handler(domain):
@@ -47,7 +45,17 @@ def certbot_handler(domain):
 
 def get_cert_letsencrypt(domain):
     try:
-        subprocess.check_output(["sudo", "certbot", "--nginx", "--force-renewal", "--redirect", "--domains", f"{domain}"])
+        subprocess.check_output(
+            [
+                "sudo",
+                "certbot",
+                "--nginx",
+                "--force-renewal",
+                "--redirect",
+                "--domains",
+                f"{domain}",
+            ]
+        )
         return True
     except Exception as e:
         print(str(e))

@@ -1,7 +1,8 @@
 # handles all the file operations
-import os
 import json
+import os
 import subprocess
+
 from .validation import is_valid_hostname
 
 
@@ -48,8 +49,7 @@ def gen_config():
     # handling ports
     print()
     print(
-        "Ports separated by commas(,) in nginx fashion, like 80, [::]:80 etc"
-        + os.linesep,
+        "Ports separated by commas(,) in nginx fashion, like 80, [::]:80 etc" + os.linesep,
         "For ssl, just add ssl after the port, e.g. 80, 443 ssl, [::]:80, [::]:443 ssl",
         sep="",
     )
@@ -79,9 +79,7 @@ def config_lines(url, ports, root, proxy=False, ssl_cert_path=False, ssl_key_pat
     head.append(f"  root {root};")
     if not check_if_webroot(root) and not proxy:
         print("No index.html in root folder, creating a placeholder.")
-        create_default_index_file(
-            os.path.join(root, "index_quickdeploy.html")
-        )
+        create_default_index_file(os.path.join(root, "index_quickdeploy.html"))
     if not proxy:
         head.append("  index index.html index.htm index_quickdeploy.html;")
     head.append(f"  server_name {url};")
@@ -90,7 +88,9 @@ def config_lines(url, ports, root, proxy=False, ssl_cert_path=False, ssl_key_pat
             head.append(f"  listen {port};")
         if "ssl" in port and ssl_cert_path is False or "ssl" in port and ssl_key_path is False:
             print(f"You have ssl enabled on {port}")
-            ssl_cert_path = input(f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/fullchain.pem):  ")
+            ssl_cert_path = input(
+                f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/fullchain.pem):  "
+            )
             if ssl_cert_path == "":
                 ssl_cert_path = f"/etc/letsencrypt/live/{url}/fullchain.pem"
             if not os.path.isfile(ssl_cert_path):
@@ -98,7 +98,9 @@ def config_lines(url, ports, root, proxy=False, ssl_cert_path=False, ssl_key_pat
                 while not os.path.isfile(ssl_cert_path):
                     ssl_cert_path = input("Enter ssl cert path:  ")
 
-            ssl_key_path = input(f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/privkey.pem):  ")
+            ssl_key_path = input(
+                f"Enter ssl cert path(default /etc/letsencrypt/live/{url}/privkey.pem):  "
+            )
             if ssl_key_path == "":
                 ssl_key_path = "/etc/letsencrypt/live/{url}/privkey.pem"
             if not os.path.isfile(ssl_key_path):
@@ -161,12 +163,7 @@ def handle_config(data: dict):
     SSL_CERT = data["ssl_cert_path"] if data["ssl_cert_path"] else False
     SSL_KEY = data["ssl_key_path"] if data["ssl_key_path"] else False
     CONFIG = config_lines(
-        url=URL,
-        ports=PORTS,
-        root=ROOT,
-        proxy=PROXY,
-        ssl_cert_path=SSL_CERT,
-        ssl_key_path=SSL_KEY
+        url=URL, ports=PORTS, root=ROOT, proxy=PROXY, ssl_cert_path=SSL_CERT, ssl_key_path=SSL_KEY
     )
     return URL, write_config(path=PATH, data=CONFIG)
 
@@ -184,9 +181,7 @@ def standard_config():
 
 
 def check_if_webroot(path):
-    if os.path.isfile(
-        os.path.join(path, "index.html")
-    ):
+    if os.path.isfile(os.path.join(path, "index.html")):
         return True
     return False
 

@@ -3,7 +3,6 @@
 import json
 import os
 
-
 with open(os.path.join(os.path.dirname(__file__), "version.json"), "r") as f:
     VERSION = json.loads(f.read())
 
@@ -21,13 +20,16 @@ def greet(version=VERSION):
         """
 
 
-def adios(version=VERSION):
+def adios(version=VERSION, message="             script ended successfully           "):
+    #                   Bye                           ##
+    #             Script ended abnormally             ##
+    #             script ended successfully           ##
     return f"""
-    #####################################################
-    ##             Nginx QuickDeploy                   ##
-    ##           script ended successfully             ##
-    ##                v{version["version"]}                           ##
-    ## https://github.com/regmibijay/nginx-quickdeploy ##
-    ##                                                 ##
-    #####################################################
-"""
+        #####################################################
+        ##             Nginx QuickDeploy                   ##
+        ##{message}##
+        ##                v{version["version"]}                           ##
+        ## https://github.com/regmibijay/nginx-quickdeploy ##
+        ##                                                 ##
+        #####################################################
+    """
