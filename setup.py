@@ -1,17 +1,12 @@
-import setuptools
 import json
 import os
+
+import setuptools
 
 with open("README.md", "r") as f:
     long_description = f.read()
 
-with open(
-    os.path.join(
-        os.path.dirname(__file__),
-        "nginx_quickdeploy",
-        "version.json"
-    ), "r"
-) as f:
+with open(os.path.join(os.path.dirname(__file__), "nginx_quickdeploy", "version.json"), "r") as f:
     version = json.loads(f.read())
 
 setuptools.setup(
