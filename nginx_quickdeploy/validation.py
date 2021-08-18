@@ -19,6 +19,7 @@ def standard_config():
         "proxy": False,
         "ssl_cert_path": False,
         "ssl_key_path": False,
+        "hook": False,
     }
 
 
@@ -34,6 +35,7 @@ def validate_args(arg):
     stan_data["proxy"] = arg.forward if arg.forward else False
     stan_data["ssl_cert_path"] = arg.ssl_cert_path if arg.ssl_cert_path else False
     stan_data["ssl_key_path"] = arg.ssl_key_path if arg.ssl_key_path else False
+    stan_data["hook"] = arg.hook if arg.hook else False
     CONFIG = config_lines(
         url=stan_data["url"],
         ports=stan_data["ports"],

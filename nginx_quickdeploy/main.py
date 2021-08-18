@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 
 from .file_operations import gen_config, handle_config, read_config
 from .misc import adios, greet
-from .system_operations import certbot_handler, restart_handler
+from .system_operations import certbot_handler, post_deploy_hook, restart_handler
 from .validation import validate_args
 
 
@@ -23,7 +23,12 @@ def main(argv=sys.argv[1:]):
     parser.add_argument("-f", "--forward", help="Proxy pass URL", nargs="?")
     parser.add_argument("--ssl_cert_path", help="SSL certificate path", nargs="?")
     parser.add_argument("--ssl_key_path", help="SSL key path", nargs="?")
+    parser.add_argument("--hook", help="Post deploy hook", nargs="?")
     arg = parser.parse_args()
+    HOOK = False
+    if arg.hook:
+        HOOK = arg.hook
+
     if arg.domain:
         if arg.input:
             print()
@@ -35,7 +40,7 @@ def main(argv=sys.argv[1:]):
         print(f"Processing {arg.domain}")
         url, res = validate_args(arg)
         if res:
-            cert_acquire_and_restart(url)
+            cert_acquire_and_restart(url=url, hook=HOOK)
         else:
             print(f"Something went wrong reading {arg.input}, please try again.")
 
@@ -43,10 +48,14 @@ def main(argv=sys.argv[1:]):
         print()
         print(f"Reading from {arg.input}")
         config = read_config(arg.input)
+        try:
+            HOOK = config["hook"]
+        except KeyError:
+            pass
         url, res = handle_config(data=config)
         if res:
             print(f"Succesfully deployed {url}")
-            cert_acquire_and_restart(url)
+            cert_acquire_and_restart(url=url, hook=HOOK)
         else:
             print(f"Something went wrong reading {arg.input}, please try again.")
     else:
@@ -64,7 +73,7 @@ def main(argv=sys.argv[1:]):
             exit()
 
 
-def cert_acquire_and_restart(url):
+def cert_acquire_and_restart(url, hook=False):
     try:
         cert_status = certbot_handler(url)
     except KeyboardInterrupt:
@@ -80,6 +89,11 @@ def cert_acquire_and_restart(url):
         print("Try again later.")
     print()
     restart_handler()
+    if hook:
+        print("################################")
+        print("POST INSTALL HOOK")
+        print("################################")
+        post_deploy_hook(hook)
     print(adios())
     exit()
 

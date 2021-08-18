@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 
 def restart_nginx(restart_command="sudo service nginx restart"):
@@ -60,3 +61,12 @@ def get_cert_letsencrypt(domain):
     except Exception as e:
         print(str(e))
         return False
+
+
+def post_deploy_hook(path):
+    if not os.path.isfile(path):
+        print(f"{path} does not seem to exist.")
+        print("No hook will be run.")
+        return False
+    subprocess.run(["sh", path])
+    return True
