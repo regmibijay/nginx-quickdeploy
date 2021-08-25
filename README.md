@@ -1,6 +1,8 @@
 # NGINX QUICKDEPLOY
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![Build Workflow](https://github.com/regmibijay/nginx-quickdeploy/actions/workflows/main.yml/badge.svg)
+![PyPi Latest Release](https://img.shields.io/pypi/v/nginx-quickdeploy.svg)
 
 ## About
 

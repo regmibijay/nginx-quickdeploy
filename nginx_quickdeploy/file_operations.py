@@ -1,7 +1,6 @@
 # handles all the file operations
 import json
 import os
-import subprocess
 
 from .validation import is_valid_hostname
 
@@ -253,13 +252,16 @@ def create_default_index_file(path):
     """
     if not os.path.isdir(os.path.dirname(path)):
         try:
-            subprocess.check_output(["mkdir", "-p", os.path.dirname(path)])
+            os.mkdir(os.path.dirname(path))
+            os.chown(os.path.dirname(path), int(os.getenv("SUDO_UID")), int(os.getenv("SUDO_GID")))
         except Exception as e:
             print(str(e))
             print("Creating directory failed, so underlying process will fail too.")
     try:
         with open(path, "w") as f:
             f.write(default_content)
+        if os.getenv("SUDO_UID") and os.getenv("SUDO_GID"):
+            os.chown(path, int(os.getenv("SUDO_UID")), int(os.getenv("SUDO_GID")))
         return True
     except Exception as e:
         print(str(e))
